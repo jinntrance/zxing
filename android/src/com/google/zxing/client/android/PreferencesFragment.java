@@ -16,19 +16,15 @@
 
 package com.google.zxing.client.android;
 
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import android.app.AlertDialog;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 
 public final class PreferencesFragment 
     extends PreferenceFragment 
@@ -71,7 +67,7 @@ public final class PreferencesFragment
   }
 
   private void disableLastCheckedPref() {
-    Collection<CheckBoxPreference> checked = new ArrayList<>(checkBoxPrefs.length);
+    Collection<CheckBoxPreference> checked = new ArrayList<CheckBoxPreference>(checkBoxPrefs.length);
     for (CheckBoxPreference pref : checkBoxPrefs) {
       if (pref.isChecked()) {
         checked.add(pref);

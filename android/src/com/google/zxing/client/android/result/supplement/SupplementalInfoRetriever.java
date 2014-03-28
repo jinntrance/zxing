@@ -25,17 +25,16 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.google.zxing.client.android.history.HistoryManager;
 import com.google.zxing.client.result.ISBNParsedResult;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ProductParsedResult;
 import com.google.zxing.client.result.URIParsedResult;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class SupplementalInfoRetriever extends AsyncTask<Object,Object,Object> {
 
@@ -76,10 +75,10 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object,Object,
   private final Collection<String[]> newHistories;
 
   SupplementalInfoRetriever(TextView textView, HistoryManager historyManager) {
-    textViewRef = new WeakReference<>(textView);
-    historyManagerRef = new WeakReference<>(historyManager);
-    newContents = new ArrayList<>();
-    newHistories = new ArrayList<>();
+    textViewRef = new WeakReference<TextView>(textView);
+    historyManagerRef = new WeakReference<HistoryManager>(historyManager);
+    newContents = new ArrayList<Spannable>();
+    newHistories = new ArrayList<String[]>();
   }
 
   @Override

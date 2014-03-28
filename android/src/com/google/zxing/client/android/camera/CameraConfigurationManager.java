@@ -136,12 +136,12 @@ final class CameraConfigurationManager {
       }
 
       if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_METERING, true)) {
-        if (parameters.isVideoStabilizationSupported()) {
-          Log.i(TAG, "Enabling video stabilization...");
-          parameters.setVideoStabilization(true);
-        } else {
-          Log.i(TAG, "This device does not support video stabilization");
-        }
+//        if (parameters.isVideoStabilizationSupported()) {
+//          Log.i(TAG, "Enabling video stabilization...");
+//          parameters.setVideoStabilization(true);
+//        } else {
+//          Log.i(TAG, "This device does not support video stabilization");
+//        }
 
         MeteringInterface.setFocusArea(parameters);
         MeteringInterface.setMetering(parameters);
@@ -288,7 +288,7 @@ final class CameraConfigurationManager {
     }
 
     // Sort by size, descending
-    List<Camera.Size> supportedPreviewSizes = new ArrayList<>(rawSupportedSizes);
+    List<Camera.Size> supportedPreviewSizes = new ArrayList<Camera.Size>(rawSupportedSizes);
     Collections.sort(supportedPreviewSizes, new Comparator<Camera.Size>() {
       @Override
       public int compare(Camera.Size a, Camera.Size b) {

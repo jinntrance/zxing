@@ -16,22 +16,6 @@
 
 package com.google.zxing.client.android;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.Result;
-import com.google.zxing.ResultMetadataType;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.camera.CameraManager;
-import com.google.zxing.client.android.clipboard.ClipboardInterface;
-import com.google.zxing.client.android.history.HistoryActivity;
-import com.google.zxing.client.android.history.HistoryItem;
-import com.google.zxing.client.android.history.HistoryManager;
-import com.google.zxing.client.android.result.ResultButtonListener;
-import com.google.zxing.client.android.result.ResultHandler;
-import com.google.zxing.client.android.result.ResultHandlerFactory;
-import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
-import com.google.zxing.client.android.share.ShareActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -48,20 +32,20 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.zxing.*;
+import com.google.zxing.client.android.camera.CameraManager;
+import com.google.zxing.client.android.camera.FrontLightMode;
+import com.google.zxing.client.android.clipboard.ClipboardInterface;
+import com.google.zxing.client.android.history.HistoryItem;
+import com.google.zxing.client.android.history.HistoryManager;
+import com.google.zxing.client.android.result.ResultButtonListener;
+import com.google.zxing.client.android.result.ResultHandler;
+import com.google.zxing.client.android.result.ResultHandlerFactory;
+import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -331,6 +315,18 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
     menuInflater.inflate(R.menu.capture, menu);
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    MenuItem item=menu.findItem(R.id.menu_flashlight);
+    switch (FrontLightMode.readPref(prefs)){
+      case ON:
+        item.setIcon(R.drawable.ic_action_flash_on);
+        break;
+      case OFF:
+        item.setIcon(R.drawable.ic_action_flash_on);
+        break;
+      default:
+        item.setIcon(R.drawable.ic_action_flash_automatic);
+    }
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -338,25 +334,45 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   public boolean onOptionsItemSelected(MenuItem item) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    switch (item.getItemId()) {
-      case R.id.menu_share:
-        intent.setClassName(this, ShareActivity.class.getName());
-        startActivity(intent);
-        break;
-      case R.id.menu_history:
-        intent.setClassName(this, HistoryActivity.class.getName());
-        startActivityForResult(intent, HISTORY_REQUEST_CODE);
-        break;
-      case R.id.menu_settings:
-        intent.setClassName(this, PreferencesActivity.class.getName());
-        startActivity(intent);
-        break;
-      case R.id.menu_help:
-        intent.setClassName(this, HelpActivity.class.getName());
-        startActivity(intent);
-        break;
-      default:
-        return super.onOptionsItemSelected(item);
+    int i = item.getItemId();
+    if( i == R.id.menu_flashlight){
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      SharedPreferences.Editor editor = prefs.edit();
+      switch (FrontLightMode.readPref(prefs)){
+        case AUTO:
+          item.setIcon(R.drawable.ic_action_flash_off);
+          editor.putString(PreferencesActivity.KEY_FRONT_LIGHT_MODE,FrontLightMode.OFF.toString());
+          break;
+        case OFF:
+          item.setIcon(R.drawable.ic_action_flash_on);
+          editor.putString(PreferencesActivity.KEY_FRONT_LIGHT_MODE,FrontLightMode.ON.toString());
+          break;
+        case ON:
+          item.setIcon(R.drawable.ic_action_flash_automatic);
+          editor.putString(PreferencesActivity.KEY_FRONT_LIGHT_MODE,FrontLightMode.AUTO.toString());
+          break;
+      }
+      editor.commit();
+      System.exit(-2);
+
+    } /*else if (i == R.id.menu_share) {
+      intent.setClassName(this, ShareActivity.class.getName());
+      startActivity(intent);
+
+    } else if (i == R.id.menu_history) {
+      intent.setClassName(this, HistoryActivity.class.getName());
+      startActivityForResult(intent, HISTORY_REQUEST_CODE);
+
+    } else if (i == R.id.menu_settings) {
+      intent.setClassName(this, PreferencesActivity.class.getName());
+      startActivity(intent);
+
+    } else if (i == R.id.menu_help) {
+      intent.setClassName(this, HelpActivity.class.getName());
+      startActivity(intent);
+
+    }*/ else {
+      return super.onOptionsItemSelected(item);
     }
     return true;
   }
