@@ -1,0 +1,3 @@
+#!/bin/bash
+git rm -r actionscript android-integration androidtest core javase jruby src zxing.appspot.com zxingorg pom.xml
+
